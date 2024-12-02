@@ -1,7 +1,7 @@
-
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import kmovie.util.requireStringProperty
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -52,7 +52,6 @@ buildkonfig {
     }
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -73,9 +72,8 @@ kotlin {
     }
     
     sourceSets {
-
+        
         androidMain.dependencies {
-
             api(libs.ktor.client.android)
 
             // Koin
@@ -96,9 +94,7 @@ kotlin {
             api(libs.play.services.location)
             api(libs.play.services.maps)
         }
-
         commonMain.dependencies {
-
             // Compose
             api(compose.runtime)
             api(compose.foundation)
@@ -144,7 +140,6 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-
     }
 }
 
@@ -164,30 +159,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file(requireStringProperty("SIGNING_STORE_FILE"))
-            storePassword = requireStringProperty("SIGNING_STORE_PASSWORD")
-            keyAlias = requireStringProperty("SIGNING_KEY_ALIAS")
-            keyPassword = requireStringProperty("SIGNING_KEY_PASSWORD")
-        }
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -204,11 +178,12 @@ android {
     }
 }
 
+dependencies {
+    debugImplementation(compose.uiTooling)
+}
+
+
 secrets {
     defaultPropertiesFileName = "default.local.properties"
     propertiesFileName = "local.properties"
-}
-
-fun Project.requireStringProperty(key: String): String {
-    return (properties[key] as? String)!!
 }

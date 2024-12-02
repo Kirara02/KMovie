@@ -1,6 +1,6 @@
-@file:Suppress("UnstableApiUsage")
-rootProject.name = "Kmovie"
+rootProject.name = "KMovie"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google {
